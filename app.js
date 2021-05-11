@@ -1,17 +1,3 @@
-const Sequelize = require('sequelize');
-
-
-(async function () {
-    
-    await book.Sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-
-    await book.Sequelize.async();
-    // } catch (error) {
-    //     console.error('Unable to connect to the database:', error);
-});
-
-
 var createError = require('http-errors');
 
 var express = require('express');

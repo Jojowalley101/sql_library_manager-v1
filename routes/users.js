@@ -3,35 +3,35 @@ var router = express.Router();
 var Book = require("../models").Book;
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// router.get('/', function(req, res, next) {
+//   res.send('respond with a resource');
+// });
 
 
 // /* GET articles listing. */
-// router.get('/', function (req, res, next) {
-//   Article.findAll({ order: [["createdAt", "DESC"]] }).then(function (articles) {
-//     res.render("articles/index", { articles: articles, title: "My Awesome Blog" });
-//   }).catch(function (error) {
-//     res.send(500, error);
-//   });
-// });
+router.get('/', function (req, res, next) {
+  Book.findAll({ order: [["createdAt", "DESC"]] }).then(function (users) {
+    res.render("users/index", { users: users, title: "My Awesome Book" });
+  }).catch(function (error) {
+    res.send(500, error);
+  });
+});
 
 // /* POST create article. */
-// router.post('/', function (req, res, next) {
-//   Article.create(req.body).then(function (article) {
-//     res.redirect("/articles/" + article.id);
-//   }).catch(function (error) {
-//     if (error.name === "SequelizeValidationError") {
-//       res.render("articles/new", { article: Article.build(req.body), errors: error.errors, title: "New Article" })
-//     } else {
-//       throw error;
-//     }
-//   }).catch(function (error) {
-//     res.send(500, error);
-//   });
-//   ;
-// });
+router.post('/', function (req, res, next) {
+  Book.create(req.body).then(function (book) {
+    res.redirect("/books/" + book.id);
+  }).catch(function (error) {
+    if (error.name === "SequelizeValidationError") {
+      res.render("books/new", { book: Book.build(req.body), errors: error.errors, title: "New Book" })
+    } else {
+      throw error;
+    }
+  }).catch(function (error) {
+    res.send(500, error);
+  });
+  ;
+});
 
 // /* Create a new article form. */
 // router.get('/new', function (req, res, next) {

@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
   });
 });
 
-// /* POST create article. */
+// /* POST create book. */
 router.post('/', function (req, res, next) {
   Book.create(req.body).then(function (book) {
     res.redirect("/books/" + book.id);
@@ -33,23 +33,23 @@ router.post('/', function (req, res, next) {
   ;
 });
 
-// /* Create a new article form. */
-// router.get('/new', function (req, res, next) {
-//   res.render("articles/new", { article: {}, title: "New Article" });
-// });
+// /* Create a new book form. */
+router.get('/new', function (req, res, next) {
+  res.render("books/new", { book: {}, title: "New Book" });
+});
 
-// /* Edit article form. */
-// router.get("/:id/edit", function (req, res, next) {
-//   Article.findById(req.params.id).then(function (article) {
-//     if (article) {
-//       res.render("articles/edit", { article: article, title: "Edit Article" });
-//     } else {
-//       res.send(404);
-//     }
-//   }).catch(function (error) {
-//     res.send(500, error);
-//   });
-// });
+// /* Edit book form. */
+router.get("/:id/edit", function (req, res, next) {
+  Book.findById(req.params.id).then(function (book) {
+    if (book) {
+      res.render("articles/edit", { book: book, title: "Edit Book" });
+    } else {
+      res.send(404);
+    }
+  }).catch(function (error) {
+    res.send(500, error);
+  });
+});
 
 
 // /* Delete article form. */

@@ -2,15 +2,111 @@
 
 var express = require('express');
 var router = express.Router();
+var Book = require("../models").Book;
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.redirect("/users")
-  //res.render('index', {title: 'Express'});
-});
+// router.get('/', function(req, res, next) {
+//   res.redirect("/books")
+//   //res.render('index', {title: 'Express'});
+// });
 
 
-// /* GET users listing. */
+function asyncHandler(cb) {
+  return async (req, res, next) => {
+    try {
+      await cb(req, res, next)
+
+    } catch (error) {
+      res.status(500).send(error);
+
+    }
+  }
+}
+
+// /* GET book listing. */
+router.get('/books', asyncHandler(async (req, res) => {
+  const dataBook = await Book.findAll();
+  res.render("index", { book: dataBook, title: "My Awesome Book" });
+  // }).catch(function (error) {
+  //   res.send(500, error);
+}));
+
+// // // /* POST create book. */
+router.post('/', asyncHandler(async (req, res) => {
+  await Book.create(req.body);
+    res.redirect("/books/" + book.id);
+    res.render("views/new", { book: Book.build(req.body), errors: error.errors, title: "New Book" });
+}));
+
+// // // /* Create a new book form. */
+router.get('/new', asyncHandler(async (req, res) => {
+  res.render("views/new", { book: {}, title: "New Book" });
+}));
+
+// // // /* Edit book form. */
+router.get("/:id/edit", asyncHandler(async (req, res) => {
+  await Book.findById(req.params.id);
+    if (book) {
+      res.render("views/edit", { book: book, title: "Edit Book" });
+    } else {
+      res.send(404);
+    }
+}));
+
+
+// // // /* Delete book form. */
+router.get("/:id/delete", asyncHandler(async (req, res) => {
+  await Book.findById(req.params.id);
+    if (book) {
+      res.render("books/delete", { book: book, title: "Delete book" });
+    } else {
+      res.send(404);
+    }
+}));
+
+
+// // /* GET individual book. */
+router.get("/:id", asyncHandler(async (req, res) => {
+  await Book.findById(req.params.id);
+    if (book) {
+      res.render("views/show", { book: book, title: book.title });
+    } else {
+      res.send(404);
+    }
+}));
+
+// // /* PUT update book. */
+router.put("/:id", asyncHandler(async (req, res) => {
+  await Book.findById(req.params.id)
+    if (book) {
+      return book.update(req.body);
+    } else {
+      res.send(404);
+    }
+  
+    res.redirect("/books/" + book.id);
+  
+    if (error.name === "SequelizeValidationError") {
+      var book = Book.build(req.body);
+      book.id = req.params.id;
+      res.render("views/edit", { book: book, errors: error.errors, title: "Edit book" })
+    } else {
+      throw error;
+    }
+}));
+
+// // /* DELETE individual book. */
+router.delete("/:id", asyncHandler(async (req, res) => {
+  await Book.findById(req.params.id);
+    if (book) {
+      return book.destroy();
+    } else {
+      res.send(404);
+    }
+    res.redirect("/books");
+}));
+
+// /* GET books listing. */
 // router.get('/', function (req, res, next) {
 //   Book.findAll({ order: [["createdAt", "DESC"]] }).then(function (users) {
 //     res.render("users/index", { users: users, title: "My Awesome Book" });

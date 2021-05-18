@@ -4,10 +4,17 @@ block content
   h1= title
   p Welcome to #{title}
   p 
-   a(href="/books/new") Create New Book
+   a(href="new_book.html") Create New Book
   
-  each book in books
-    h2= book.title
-    include by_line
-    p= book.shortDescription()
-    a(href = "/users/" + book.id) Read More &rarr;
+  each b in book
+    table(style="../public/stylesheets/style.css" rel="stylesheet") 
+      tr 
+        th Title
+        th Author
+        th Genre
+        th Year
+      tr 
+        td #{b.title} 
+        td #{b.author}
+        td #{b.genre}
+        td #{b.year} 

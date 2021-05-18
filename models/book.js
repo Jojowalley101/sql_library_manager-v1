@@ -35,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     
     genre: DataTypes.STRING,
-    year: DataTypes.INTEGER
+    year: DataTypes.INTEGER,
+    body: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Book',

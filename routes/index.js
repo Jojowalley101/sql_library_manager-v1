@@ -5,10 +5,10 @@ var router = express.Router();
 var Book = require("../models").Book;
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.redirect("/books")
-//   //res.render('index', {title: 'Express'});
-// });
+router.get('/', function(req, res, next) {
+  res.redirect("/books")
+  //res.render('index', {title: 'Express'});
+});
 
 
 function asyncHandler(cb) {
@@ -34,7 +34,7 @@ router.get('/books', asyncHandler(async (req, res) => {
 // // // /* POST create book. */
 router.post('/', asyncHandler(async (req, res) => {
   await Book.create(req.body);
-    res.redirect("/books/" + book.id);
+    res.redirect("/books" + book.id);
     res.render("views/new", { book: Book.build(req.body), errors: error.errors, title: "New Book" });
 }));
 

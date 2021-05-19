@@ -7,7 +7,7 @@
 
 
 var app = require('../app');
-var debug = require('debug')('sql-library-manager-v1:server');
+//var debug = require('debug')('sql-library-manager-v1:server');
 var http = require('http');
 const sequelize = require('../models').sequelize;
 
@@ -29,10 +29,8 @@ var server = http.createServer(app);
  */
 
 
-sequelize.sync().then(function () {
-  server.listen(port);
-});
 
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -93,5 +91,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  //debug('Listening on ' + bind);
 }

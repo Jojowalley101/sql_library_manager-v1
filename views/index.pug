@@ -1,21 +1,24 @@
-extends layout
+extends ./layout
 
 block content
   h1= title
+  
   p Welcome to #{title}
   p 
-    a(href="/new") Create New Book
+    a(class="button" href="/books/new") Create New Book
      
-  
-  each b in book
-    table(style="../public/stylesheets/style.css") 
+  table
+    thread
       tr 
         th Title
         th Author
         th Genre
         th Year
-      tr 
-        td #{b.title} 
-        td #{b.author}
-        td #{b.genre}
-        td #{b.year} 
+    tbody 
+      each b in book
+        tr 
+          td  
+            a(href=`/books/${b.id}`)=b.title
+          td=b.author
+          td=b.genre
+          td=b.year

@@ -1,6 +1,6 @@
 //var app = require('../app');
 var createError = require('http-errors');
-//var sequelize = require('./models').sequelize;
+var sequelize = require('./models').sequelize;
 
 
 var express = require('express');
@@ -21,7 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(__dirname + '../public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 //app.use('/books', usersRouter);
@@ -41,5 +41,15 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+(async () => {
+  try {
+    //authenticate used to test connection to data base
+    await sequelize.authenticate();
+    console.log('Connection to database successful!');
+  } catch (error) {
+    console.error('Error connecting to database: ', error);
+  }
+})();
 
 module.exports = app;

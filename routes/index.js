@@ -1,5 +1,5 @@
 //import Book from '../models';
-
+//similar to the "post create book thing...for all below."
 var express = require('express');
 var router = express.Router();
 var Book = require("../models").Book;
@@ -31,80 +31,103 @@ router.get('/books', asyncHandler(async (req, res) => {
   //   res.send(500, error);
 }));
 
-// // // /* POST create book. */
-router.post('/', asyncHandler(async (req, res) => {
-  await Book.create(req.body);
-    res.redirect("/books" + book.id);
-    res.render("views/new", { book: Book.build(req.body), errors: error.errors, title: "New Book" });
-}));
-
 // // // /* Create a new book form. */
-router.get('/new', asyncHandler(async (req, res) => {
-  res.render("views/new", { book: {}, title: "New Book" });
+router.get('/books/new', asyncHandler(async (req, res) => {
+  res.render("new", { book: {}, title: "New Book" });
 }));
 
-// // // /* Edit book form. */
-router.get("/:id/edit", asyncHandler(async (req, res) => {
-  await Book.findById(req.params.id);
-    if (book) {
-      res.render("views/edit", { book: book, title: "Edit Book" });
-    } else {
-      res.send(404);
-    }
-}));
-
-
-// // // /* Delete book form. */
-router.get("/:id/delete", asyncHandler(async (req, res) => {
-  await Book.findById(req.params.id);
-    if (book) {
-      res.render("books/delete", { book: book, title: "Delete book" });
-    } else {
-      res.send(404);
-    }
-}));
-
-
-// // /* GET individual book. */
-router.get("/:id", asyncHandler(async (req, res) => {
-  await Book.findById(req.params.id);
-    if (book) {
-      res.render("views/show", { book: book, title: book.title });
-    } else {
-      res.send(404);
-    }
-}));
-
-// // /* PUT update book. */
-router.put("/:id", asyncHandler(async (req, res) => {
-  await Book.findById(req.params.id)
-    if (book) {
-      return book.update(req.body);
-    } else {
-      res.send(404);
-    }
-  
-    res.redirect("/books/" + book.id);
-  
+// // // /* POST create book. */
+router.post('/books/new', asyncHandler(async (req, res) => {
+  let book;
+  try {
+    book = await Book.create(req.body);
+    res.redirect("/books");
+  }
+  catch (error) {
     if (error.name === "SequelizeValidationError") {
-      var book = Book.build(req.body);
-      book.id = req.params.id;
-      res.render("views/edit", { book: book, errors: error.errors, title: "Edit book" })
+      book = await Book.build(req.body);
+      res.render("new", { book: book, errors: error.errors, title: "New Book" });
     } else {
       throw error;
     }
+
+}}));
+
+// // /* GET individual book. */
+router.get("/books/:id", asyncHandler(async (req, res) => {
+  try {
+    const bookSingleID = await Book.findOne({where: {id: req.params.id}});
+    //console.log(req.params.id);
+    res.render("edit", { book: bookSingleID, title: bookSingleID.title });
+  } catch (error) {
+    throw error;
+
+  }
+}));
+
+// // /* PUT update book. */
+router.put("/books/:id", asyncHandler(async (req, res) => {
+  let updateBook;
+  try {
+    updateBook = await Book.save();
+    res.redirect("/books/" + book.id);
+  } catch (error) {
+    throw error;
+  }
+    // if (error.name === "SequelizeValidationError") {
+    //   var book = Book.build(req.body);
+    //   book.id = req.params.id;
+    //   res.render("edit", { book: book, errors: error.errors, title: "Edit book" })
+    // } else {
+    //   throw error;
+    // }
 }));
 
 // // /* DELETE individual book. */
-router.delete("/:id", asyncHandler(async (req, res) => {
-  await Book.findById(req.params.id);
-    if (book) {
-      return book.destroy();
-    } else {
-      res.send(404);
-    }
+router.delete("/books/:id/delete", asyncHandler(async (req, res) => {
+  try {
+    const bookDeleteIndividual = await Book.findOne({ where: { id: req.params.id } });
+    bookDeleteIndividual.destroy();
     res.redirect("/books");
+    //console.log(req.params.id);
+    //res.render("edit", { book: bookDeleteIndividual, title: bookDeleteIndividual.title });
+  } catch (error) {
+    throw error;
+  }
 }));
+
+
+// // // /* Edit book form. */
+// router.get("/books/:id/edit", asyncHandler(async (req, res) => {
+//   try {
+//   //const bookByIdFinder = await Book.findOne({where: { id: req.params.id}});
+//   console.log(req.params.id);
+//   //res.render("edit", { book: bookByIdFinder, title: "Edit Book" });
+// } catch (error) {
+//     throw error;
+// }
+
+// }));
+
+
+// // // /* Delete book form. */
+// router.get("/books/:id/delete", asyncHandler(async (req, res) => {
+//   try {
+//     const bookDelete = await Book.findOne({ where: { id: req.params.id } });
+//     //console.log(req.params.id);
+//     res.render("delete", { book: bookDelete, title: bookDelete.title });
+//   } catch (error) {
+//     throw error;
+
+//   }
+// }));
+
+
+
+
+
+
+
 
 // /* GET books listing. */
 // router.get('/', function (req, res, next) {

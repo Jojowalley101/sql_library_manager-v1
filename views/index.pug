@@ -4,10 +4,11 @@ block content
   h1= title
   p Welcome to #{title}
   p 
-   a(href="new_book.html") Create New Book
+    a(href="/books/new") Create New Book
+     
   
   each b in book
-    table(style="../public/stylesheets/style.css" rel="stylesheet") 
+    table(style="../public/stylesheets/style.css") 
       tr 
         th Title
         th Author

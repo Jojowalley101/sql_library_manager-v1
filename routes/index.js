@@ -65,12 +65,13 @@ router.get("/books/:id", asyncHandler(async (req, res) => {
   }
 }));
 
-// // /* PUT update book. */
-router.put("/books/:id", asyncHandler(async (req, res) => {
+// // /* POST update book. */
+router.post("/books/:id", asyncHandler(async (req, res) => {
   let updateBook;
   try {
-    updateBook = await Book.save();
-    res.redirect("/books/" + book.id);
+    updateBook = await Book.findByPk(req.params.id);
+    await updateBook.update(req.body);
+    res.redirect("/books");
   } catch (error) {
     throw error;
   }
@@ -84,10 +85,10 @@ router.put("/books/:id", asyncHandler(async (req, res) => {
 }));
 
 // // /* DELETE individual book. */
-router.delete("/books/:id/delete", asyncHandler(async (req, res) => {
+router.post("/books/:id/delete", asyncHandler(async (req, res) => {
   try {
-    const bookDeleteIndividual = await Book.findOne({ where: { id: req.params.id } });
-    bookDeleteIndividual.destroy();
+    const bookDeleteIndividual = await Book.findByPk(req.params.id);
+    await bookDeleteIndividual.destroy();
     res.redirect("/books");
     //console.log(req.params.id);
     //res.render("edit", { book: bookDeleteIndividual, title: bookDeleteIndividual.title });

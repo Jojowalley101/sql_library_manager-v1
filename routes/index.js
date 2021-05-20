@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
   //res.render('index', {title: 'Express'});
 });
 
-
 function asyncHandler(cb) {
   return async (req, res, next) => {
     try {
@@ -56,36 +55,34 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 // // /* GET individual book. */
 router.get("/books/:id", asyncHandler(async (req, res) => {
   try {
-    const bookSingleID = await Book.findOne({where: {id: req.params.id}});
+    const bookSingleID = await Book.findOne({ where: { id: req.params.id } });
     //console.log(req.params.id);
     res.render("edit", { book: bookSingleID, title: bookSingleID.title });
   } catch (error) {
-      const errorNotFound = new Error('Error, page not found');
-      errorNotFound.status = 404;
-      console.log(errorNotFound.status, errorNotFound.message);
-      next(errorNotFound);
-  }
-}));
-/**
- * Error handling for 404 errors and 500 errors
- */
-router.get('/error', (req, res, next) => {
-  const errorServer = new Error('Server error');
-  errorServer.status = 500;
-  console.log(errorServer.status, errorServer.message);
-  next(errorServer);
-});
-
-router.use((errors, req, res, next) => {
-  res.locals.error = errors;
-  res.status(errors.status || 404);
-
-  if (errors.status === 500) {
-    res.render('errors', {errors});
+    if (error.status === 404) {
+    const errorNotFound = new Error('Error, page not found');
+    errorNotFound.status = 404;
+    console.log(errorNotFound.status, errorNotFound.message);
+    next(errorNotFound);
   } else {
-    res.render('error', {error});
+      const errorServer = new Error('Server error');
+      errorServer.status = 500;
+      console.log(errorServer.status, errorServer.message);
+      next(errorServer);
   }
-});
+}}));
+
+
+// router.use((errors, req, res, next) => {
+//   res.locals.error = errors;
+//   res.status(errors.status || 404);
+
+//   if (errors.status === 500) {
+//     res.render('errors', { errors });
+//   } else {
+//     res.render('error', { error });
+//   }
+// });
 
 // // /* POST update book. */
 router.post("/books/:id", asyncHandler(async (req, res) => {

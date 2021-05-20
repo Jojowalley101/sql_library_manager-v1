@@ -60,10 +60,32 @@ router.get("/books/:id", asyncHandler(async (req, res) => {
     //console.log(req.params.id);
     res.render("edit", { book: bookSingleID, title: bookSingleID.title });
   } catch (error) {
-    throw error;
-
+      const errorNotFound = new Error('Error, page not found');
+      errorNotFound.status = 404;
+      console.log(errorNotFound.status, errorNotFound.message);
+      next(errorNotFound);
   }
 }));
+/**
+ * Error handling for 404 errors and 500 errors
+ */
+router.get('/error', (req, res, next) => {
+  const errorServer = new Error('Server error');
+  errorServer.status = 500;
+  console.log(errorServer.status, errorServer.message);
+  next(errorServer);
+});
+
+router.use((errors, req, res, next) => {
+  res.locals.error = errors;
+  res.status(errors.status || 404);
+
+  if (errors.status === 500) {
+    res.render('errors', {errors});
+  } else {
+    res.render('error', {error});
+  }
+});
 
 // // /* POST update book. */
 router.post("/books/:id", asyncHandler(async (req, res) => {
@@ -73,7 +95,12 @@ router.post("/books/:id", asyncHandler(async (req, res) => {
     await updateBook.update(req.body);
     res.redirect("/books");
   } catch (error) {
-    throw error;
+    if (error.name === "SequelizeValidationError") {
+      book = await Book.build(req.body);
+      res.render("new", { book: book, errors: error.errors, title: "New Book" });
+    } else {
+      throw error;
+    }
   }
     // if (error.name === "SequelizeValidationError") {
     //   var book = Book.build(req.body);

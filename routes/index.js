@@ -53,7 +53,7 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 }}));
 
 // // /* GET individual book. */
-router.get("/books/:id", asyncHandler(async (req, res) => {
+router.get("/books/:id", asyncHandler(async (req, res, next) => {
   try {
     const bookSingleID = await Book.findOne({ where: { id: req.params.id } });
     //console.log(req.params.id);
